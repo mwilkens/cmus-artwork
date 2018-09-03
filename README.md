@@ -1,6 +1,8 @@
 # cmus-artwork
 displays album artwork from cmus using feh
 
+![Example Screenshot](sample.png)
+
 ## Steps:
 
 1. Add `cmus_cover_art.py` to your `status_display_program.sh` file
