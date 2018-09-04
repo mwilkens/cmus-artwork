@@ -7,6 +7,10 @@ CMUS_DIR=~/.config/cmus/cmus-artwork
 # Refresh every 5 seconds
 FEH_REFRESH=5
 
+if [! -d "$CMUS_COVERS_DIR"]; then
+    mkdir $CMUS_COVERS_DIR
+fi
+
 while (true)
 do
     if ps ax | grep -v grep | grep 'cmus' > /dev/null
