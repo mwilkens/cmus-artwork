@@ -14,5 +14,4 @@ displays album artwork from cmus using feh
 
 ## TODO:
 
-* Add support for pictures in folders, i.e. `folder.jpg` or `cover.jpg`
 * BUG: no artwork crashes feh, workaround is already in place by restarting feh with default art

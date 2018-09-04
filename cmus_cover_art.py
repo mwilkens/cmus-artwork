@@ -26,7 +26,7 @@ import subprocess
 from PIL import Image 
 
 # Make sure to change this to where you cloned the repo
-REPO_LOCATION = "~/.config/cmus/cmus-artwork"
+REPO_LOCATION = sys.path[0]
 
 def print_usage():
    """Display usage info and exit."""
@@ -53,6 +53,9 @@ def print_usage():
    print ' #  4. Enjoy desktop notifications from cmus! Be sure to :save.               #'
    print ' ##############################################################################'
    sys.exit(2)
+
+def dprint(msg):
+    subprocess.call("notify-send '"+msg+"'",shell=True)
 
 
 def status_data(item):
@@ -105,15 +108,26 @@ def get_cover_art():
         print "Getting Cover Art for %s" % stamp
         subprocess.call('rm '+REPO_LOCATION+'/temp.jpg', shell=True)
         subprocess.call('ffmpeg -i "'+ status_data('file') +'" -an -vcodec copy '+REPO_LOCATION+'/temp.jpg', shell=True)
-        if os.path.isfile(REPO_LOCATION + "/temp.jpg"):
+        time.sleep(0.2)
+        temp_art = REPO_LOCATION + "/temp.jpg"
+        if os.path.isfile(temp_art):
             subprocess.call("rm "+REPO_LOCATION+"/covers/*.jpg", shell=True)
             subprocess.call("cp "+REPO_LOCATION+"/temp.jpg "+REPO_LOCATION+"/covers/"+stamp+"_art.jpg", shell=True)
         else:
             print "Art not found in tags... checking folder"
+            found_art = False
             folder = os.path.dirname(status_data('file'))
-            print "No Art Found!"
-            subprocess.call('rm '+REPO_LOCATION+'/covers/*.jpg', shell=True)
-            subprocess.call("cp "+REPO_LOCATION+"/noart.jpg "+REPO_LOCATION+"/covers/"+stamp+"_art.jpg", shell=True)
+            for afile in os.listdir(folder):
+                if afile.endswith(".jpg"):
+                    file_art = os.path.join(folder, afile)
+                    subprocess.call('rm '+REPO_LOCATION+'/covers/*.jpg', shell=True)
+                    subprocess.call("cp '"+file_art+"' "+REPO_LOCATION+"/covers/"+stamp+"_art.jpg", shell=True)
+                    found_art = True
+                    break
+            if found_art == False:
+                print "No Art Found!"
+                subprocess.call('rm '+REPO_LOCATION+'/covers/*.jpg', shell=True)
+                subprocess.call("cp "+REPO_LOCATION+"/noart.jpg "+REPO_LOCATION+"/covers/"+stamp+"_art.jpg", shell=True)
 
 def main():
     getArt = False
